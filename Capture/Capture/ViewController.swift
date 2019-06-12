@@ -40,9 +40,11 @@ class ViewController: UIViewController {
     }
     
     @IBAction func stopCapturing(_ sender: Any) {
+        //停止写入
         movieOutput?.stopRecording()
         
         session.stopRunning()
+        
         previewLayer?.removeFromSuperlayer()
     }
     
@@ -52,7 +54,7 @@ class ViewController: UIViewController {
             return
         }
         let postion : AVCaptureDevice.Position = videoInput.device.position == .front ? .back : .front
-        guard let devices = AVCaptureDevice.devices() as? [AVCaptureDevice] else { return }
+        let devices = AVCaptureDevice.devices()
         guard let device = devices.filter({ $0.position == postion }).first else { return }
         guard let newInput = try? AVCaptureDeviceInput(device: device) else { return }
         
@@ -92,10 +94,7 @@ extension ViewController {
     /// 初始化视频的输入输出
     fileprivate func setupVideoInputOutput(){
         //1 视频的输入
-        guard let devices = AVCaptureDevice.devices() as? [AVCaptureDevice] else {
-            print("get video AVCaptureDevices failed!")
-            return
-        }
+        let devices = AVCaptureDevice.devices()
         //1.1默认获取前置摄像头
         guard let device = devices.filter({$0.position == .front}).first else {
              print("get front video AVCaptureDevice  failed!")
@@ -172,11 +171,10 @@ extension ViewController {
         }
         
         let filePath = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true).first! + "/test.mp4"
+        print("filePath: \(filePath)")
         let fileURL = URL(fileURLWithPath: filePath)
         
         fileOutput.startRecording(to: fileURL, recordingDelegate: self)
-        
-        
         
         
     }
